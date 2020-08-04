@@ -44,9 +44,13 @@ public class RsController {
         ObjectMapper objectMapper = new ObjectMapper();
         RsEvent rsEvent = objectMapper.readValue(rsEventString, RsEvent.class);
 
-        if (rsList.size() >= index - 1) {
-            rsList.get(index - 1).setEventName(rsEvent.getEventName());
-            rsList.get(index - 1).setKeyWord(rsEvent.getKeyWord());
+        if (rsList.get(index - 1) != null) {
+            if(rsEvent.getEventName() != null){
+                rsList.get(index - 1).setEventName(rsEvent.getEventName());
+            }
+            if(rsEvent.getKeyWord() != null){
+                rsList.get(index - 1).setKeyWord(rsEvent.getKeyWord());
+            }
         }
     }
 
