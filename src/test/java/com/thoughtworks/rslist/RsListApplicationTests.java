@@ -26,4 +26,11 @@ class RsListApplicationTests {
                 .andExpect(content().string("第一条事件"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void shouldGetRsEventBetween() throws Exception {
+        mockMvc.perform(get("/rs/list?start=1&end=3"))
+                .andExpect(content().string("[第一条事件, 第二条事件, 第三条事件]"))
+                .andExpect(status().isOk());
+    }
 }
