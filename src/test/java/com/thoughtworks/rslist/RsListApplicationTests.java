@@ -77,4 +77,17 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$.keyWord",is("火山爆发是个假新闻")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void shouldDeleteOneRsEvent() throws Exception {
+        int deleteIndex = 1;
+
+        mockMvc.perform(delete("/rs/delete/{index}",deleteIndex))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/1"))
+                .andExpect(jsonPath("$.eventName",is("第二件事件")))
+                .andExpect(jsonPath("$.keyWord",is("游泳")))
+                .andExpect(status().isOk());
+    }
 }
