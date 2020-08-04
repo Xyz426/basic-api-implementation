@@ -14,9 +14,9 @@ public class RsController {
 
     private List<RsEvent> init() {
         rsList = new ArrayList<>();
-        rsList.add(new RsEvent("第一件事件","篮球"));
-        rsList.add(new RsEvent("第二件事件","游泳"));
-        rsList.add(new RsEvent("第三件事件","足球"));
+        rsList.add(new RsEvent("第一件事件", "篮球"));
+        rsList.add(new RsEvent("第二件事件", "游泳"));
+        rsList.add(new RsEvent("第三件事件", "足球"));
 
         return rsList;
     }
@@ -38,4 +38,16 @@ public class RsController {
         RsEvent rsEvent = objectMapper.readValue(rsEventString, RsEvent.class);
         rsList.add(rsEvent);
     }
+
+    @PutMapping("rs/update/{index}")
+    public void shouldUpdateOneRsEvent(@PathVariable int index, @RequestBody String rsEventString) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        RsEvent rsEvent = objectMapper.readValue(rsEventString, RsEvent.class);
+
+        if (rsList.size() >= index - 1) {
+            rsList.get(index - 1).setEventName(rsEvent.getEventName());
+            rsList.get(index - 1).setKeyWord(rsEvent.getKeyWord());
+        }
+    }
+
 }

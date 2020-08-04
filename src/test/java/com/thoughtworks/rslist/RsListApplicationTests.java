@@ -10,8 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -59,6 +58,23 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rs/4"))
                 .andExpect(jsonPath("$.eventName",is("第四件事件")))
                 .andExpect(jsonPath("$.keyWord",is("火山爆发")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldUpdateOneRsEvent() throws Exception {
+        int updateIndex = 1;
+        RsEvent rsEvent = new RsEvent("第一件事件", "火山爆发是个假新闻");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(put("/rs/update/{index}",updateIndex).content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/1"))
+                .andExpect(jsonPath("$.eventName",is("第一件事件")))
+                .andExpect(jsonPath("$.keyWord",is("火山爆发是个假新闻")))
                 .andExpect(status().isOk());
     }
 }
