@@ -50,4 +50,11 @@ public class RsController {
         }
     }
 
+    @DeleteMapping("rs/delete/{indexDelete}")
+    public void shouldDeleteOneRsEvent(@PathVariable int indexDelete) {
+        if (rsList.get(indexDelete) != null) {
+            rsList.remove(indexDelete - 1);
+        }
+    }
+
 }
