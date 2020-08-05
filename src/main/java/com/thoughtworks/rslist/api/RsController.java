@@ -8,6 +8,8 @@ import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.exception.InvalidPostRsParamException;
 import com.thoughtworks.rslist.exception.InvalidPostUserParamException;
 import org.omg.CORBA.DynAnyPackage.Invalid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -70,6 +72,9 @@ public class RsController {
 
     @ExceptionHandler({InvalidIndexException.class,InvalidPostRsParamException.class,InvalidPostUserParamException.class})
     public ResponseEntity exceptionHandler(Exception ex){
+        Logger logger = LoggerFactory.getLogger(RsController.class);
+        logger.error(ex.getMessage());
+
         CommonError commonError = new CommonError();
         commonError.setError(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
