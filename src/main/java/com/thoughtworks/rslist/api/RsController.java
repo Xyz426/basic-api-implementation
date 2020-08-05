@@ -4,8 +4,11 @@ import com.thoughtworks.rslist.domain.CommonError;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
+import com.thoughtworks.rslist.exception.InvalidPostRsParamException;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,7 +40,11 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public ResponseEntity shouldAddOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    public ResponseEntity shouldAddOneRsEvent(@RequestBody @Valid RsEvent rsEvent, BindingResult result) throws InvalidPostRsParamException {
+        if(result.hasErrors()){
+            throw new InvalidPostRsParamException("invalid param");
+        }
+
         User user = rsEvent.getUser();
         if (!userNameList.contains(user.getUserName())) {
             userNameList.add(user.getUserName());
@@ -58,7 +65,7 @@ public class RsController {
         return ResponseEntity.ok(rsList.subList(start,end));
     }
 
-    @ExceptionHandler(InvalidIndexException.class)
+    @ExceptionHandler({InvalidIndexException.class,InvalidPostRsParamException.class})
     public ResponseEntity exceptionHandler(InvalidIndexException ex){
         CommonError commonError = new CommonError();
         commonError.setError(ex.getMessage());
