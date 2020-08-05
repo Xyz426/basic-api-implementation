@@ -64,4 +64,40 @@ class RsListApplicationTests {
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void ageShouldNotNullGender() throws Exception {
+        User user = new User("xiaoxxxx", 212, "", "xyz@123.com", "11234567890");
+
+        RsEvent rsEvent = new RsEvent("第二件热搜", "hhhh失败", user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void ageShouldPattenEmail() throws Exception {
+        User user = new User("xiaoxxxx", 212, "male", "xyz123.com", "11234567890");
+
+        RsEvent rsEvent = new RsEvent("第二件热搜", "hhhh失败", user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void ageShouldLengthMoreThan11() throws Exception {
+        User user = new User("xiaoxxxx", 212, "male", "xyz123.com", "234567890");
+
+        RsEvent rsEvent = new RsEvent("第二件热搜", "hhhh失败", user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
