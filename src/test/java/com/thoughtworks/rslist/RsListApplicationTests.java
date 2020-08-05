@@ -47,6 +47,10 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$.keyWord",is("2222成功")))
                 .andExpect((jsonPath("$", not(hasKey("user")))))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/10"))
+                .andExpect(jsonPath("$.error",is("invalid index")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -62,8 +66,7 @@ class RsListApplicationTests {
     @Test
     void shouldGetRoundList() throws Exception {
         mockMvc.perform(get("/rs/list?start=-1&end=2"))
-                .andExpect(jsonPath("$.error",is("invalid request param")))
+                .andExpect(jsonPath("$.error", is("invalid request param")))
                 .andExpect(status().isBadRequest());
     }
-
 }

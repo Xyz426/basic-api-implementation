@@ -66,7 +66,10 @@ public class RsController {
     }
 
     @GetMapping("/rs/{index}")
-    public ResponseEntity shouldGetOneRsEvent(@PathVariable int index) {
+    public ResponseEntity shouldGetOneRsEvent(@PathVariable int index) throws InvalidIndexException {
+        if(index <0 || index > rsList.size()){
+            throw new InvalidIndexException("invalid index");
+        }
         RsEvent rsEvent = rsList.get(index);
         return ResponseEntity.ok(rsEvent);
     }
