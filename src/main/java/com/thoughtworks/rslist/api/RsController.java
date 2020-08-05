@@ -1,10 +1,12 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.CommonError;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.exception.InvalidPostRsParamException;
+import com.thoughtworks.rslist.exception.InvalidPostUserParamException;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,7 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
+    @JsonView(RsEvent.RsEventUserInfo.class)
     public ResponseEntity shouldAddOneRsEvent(@RequestBody @Valid RsEvent rsEvent, BindingResult result) throws InvalidPostRsParamException {
         if(result.hasErrors()){
             throw new InvalidPostRsParamException("invalid param");
@@ -65,8 +68,8 @@ public class RsController {
         return ResponseEntity.ok(rsList.subList(start,end));
     }
 
-    @ExceptionHandler({InvalidIndexException.class,InvalidPostRsParamException.class})
-    public ResponseEntity exceptionHandler(InvalidIndexException ex){
+    @ExceptionHandler({InvalidIndexException.class,InvalidPostRsParamException.class,InvalidPostUserParamException.class})
+    public ResponseEntity exceptionHandler(Exception ex){
         CommonError commonError = new CommonError();
         commonError.setError(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
@@ -85,5 +88,16 @@ public class RsController {
     public ResponseEntity shouldGetAllUser(){
 
         return ResponseEntity.ok(userList);
+    }
+
+    @PostMapping("user")
+    @JsonView(RsEvent.RsEventUserInfo.class)
+    public ResponseEntity shouldAddUser(@RequestBody @Valid User user,BindingResult result) throws InvalidPostUserParamException {
+        if(result.hasErrors()){
+            throw new InvalidPostUserParamException("invalid user");
+        }
+
+        userList.add(user);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

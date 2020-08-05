@@ -1,9 +1,9 @@
 package com.thoughtworks.rslist.exception;
 
-public class InvalidIndexException extends RuntimeException {
-    String message;
+public class InvalidPostUserParamException extends RuntimeException {
+    private String message;
 
-    public InvalidIndexException(String message) {
+    public InvalidPostUserParamException(String message) {
         this.message = message;
     }
 

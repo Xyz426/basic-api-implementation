@@ -1,6 +1,6 @@
 package com.thoughtworks.rslist.exception;
 
-public class InvalidPostRsParamException extends Throwable {
+public class InvalidPostRsParamException extends RuntimeException {
     private String message;
 
     public InvalidPostRsParamException(String message) {

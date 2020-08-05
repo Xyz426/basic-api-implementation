@@ -36,7 +36,7 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rs/lists"))
                 .andExpect(jsonPath("$[3].eventName", is("第四件热搜")))
                 .andExpect(jsonPath("$[3].keyWord", is("4444成功")))
-                .andExpect(jsonPath("$[3].user.userName", is("ddd")))
+                .andExpect(jsonPath("$[3].user.user_name", is("ddd")))
                 .andExpect(status().isOk());
     }
 
@@ -67,6 +67,17 @@ class RsListApplicationTests {
     void shouldGetRoundList() throws Exception {
         mockMvc.perform(get("/rs/list?start=-1&end=2"))
                 .andExpect(jsonPath("$.error", is("invalid request param")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouleAddUser() throws Exception {
+        User user = new User("ddd", 2221, "male", "xyz@123.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.error", is("invalid user")))
                 .andExpect(status().isBadRequest());
     }
 }
