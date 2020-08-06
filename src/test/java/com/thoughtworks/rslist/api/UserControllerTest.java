@@ -16,8 +16,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,5 +49,14 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.age",is(21)))
                 .andExpect(jsonPath("$.id",is(1)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldDeleteUserById() throws Exception {
+        mockMvc.perform(delete("/user/1"))
+                .andExpect(status().isOk());
+
+        List<UserEntity> users = userRepository.findAll();
+        assertEquals(0,users.size());
     }
 }
