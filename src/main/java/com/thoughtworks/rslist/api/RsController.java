@@ -5,6 +5,7 @@ import com.thoughtworks.rslist.domain.CommonError;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.exception.InvalidPostRsParamException;
 import com.thoughtworks.rslist.exception.InvalidPostUserParamException;
@@ -64,7 +65,8 @@ public class RsController {
             throw new InvalidPostRsParamException("invalid param");
         }
 
-        RsEventEntity rsEventEntity = RsEventEntity.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userId(rsEvent.getUserId()).build();
+        Optional<UserEntity> userEntity = userRepository.findById(rsEvent.getUserId());
+        RsEventEntity rsEventEntity = RsEventEntity.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userEntity(userEntity.get()).build();
         rsEventRepository.save(rsEventEntity);
         return ResponseEntity.ok(HttpStatus.OK);
     }
