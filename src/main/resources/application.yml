@@ -1,1 +1,14 @@
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost/jpalearn
+    driver-class-name: com.mysql.jdbc.Driver
 
+  Jpa:
+    hibernate:
+      #更新或创建数据表
+      ddl-auto: update
+
+    #控制台显示SQL
+    show-sql: true
