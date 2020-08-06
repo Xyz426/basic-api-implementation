@@ -1,4 +1,5 @@
 package com.thoughtworks.rslist.api;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
@@ -6,6 +7,7 @@ import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,6 +31,14 @@ public class RsControllerTest {
     @Autowired
     UserRepository userRepository;
 
+
+    @BeforeEach
+    void setUp(){
+        userRepository.deleteAll();
+        rsEventRepository.deleteAll();
+    }
+
+
     @Test
     void shouldAddOneRsEvent() throws Exception {
         //UserEntity userEntity = userRepository.save(UserEntity.builder().gender("female").phone("12334343222").email("xyz@qq.com").userName("hello").age(18).build());
@@ -38,6 +48,27 @@ public class RsControllerTest {
         String requestJson = objectMapper.writeValueAsString(rsEvent);
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldUpdateOneRsEvent() throws Exception {
+        UserEntity userEntity = userRepository.save(UserEntity.builder().age(18).
+                email("aa@a.com").gender("male").phone("1222334567").userName("hhh").build());
+        RsEventEntity rsEventEntity = rsEventRepository.save(RsEventEntity.builder().userEntity(userEntity).keyWord("hewa")
+                .eventName("nizh").build());
+
+        int userId = userEntity.getId();
+        int rsEventId = rsEventEntity.getId();
+
+        RsEvent rsEvent = new RsEvent("nizh", "hewa", userId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+//        mockMvc.perform(put("/rs/update/"+rsEventId).content(requestJson).contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+
+        mockMvc.perform(put("/rs/update/2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -72,7 +103,7 @@ public class RsControllerTest {
     }
 
     @Test
-    void shouleAddUser() throws Exception {
+    void shouldAddUser() throws Exception {
         User user = new User("ddd", 2221, "male", "xyz@123.com", "11234567890");
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(user);

@@ -60,9 +60,7 @@ public class RsController {
         }
 
         if (!userRepository.existsById(rsEvent.getUserId())) {
-//            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
-            //为什么用上面那个不行，同样相当于返回一个400
-            throw new InvalidPostRsParamException("invalid param");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         Optional<UserEntity> userEntity = userRepository.findById(rsEvent.getUserId());
@@ -113,6 +111,29 @@ public class RsController {
         }
 
         userList.add(user);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PutMapping("/rs/update/{rsEventId}")
+    public ResponseEntity updateRsEvent(@PathVariable int rsEventId,@RequestBody RsEvent rsEvent){
+        if(!rsEventRepository.existsById(rsEventId)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        RsEventEntity rsEventEntity = rsEventRepository.findById(rsEventId).get();
+        int userId = rsEventEntity.getUserEntity().getId();
+        if(userId != rsEvent.getUserId()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if(rsEvent.getEventName() != null){
+            rsEventEntity.setEventName(rsEvent.getEventName());
+        }
+
+        if(rsEvent.getKeyWord() != null){
+            rsEventEntity.setKeyWord(rsEvent.getKeyWord());
+        }
+
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
