@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.CommonError;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.exception.InvalidPostRsParamException;
 import com.thoughtworks.rslist.exception.InvalidPostUserParamException;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,46 +35,51 @@ public class RsController {
         userNameList.add("bbb");
         userNameList.add("ccc");
 
-        rsList.add(new RsEvent("第一件热搜", "1111成功", userList.get(0)));
-        rsList.add(new RsEvent("第二件热搜", "2222成功", userList.get(1)));
-        rsList.add(new RsEvent("第三件热搜", "3333成功", userList.get(2)));
+        rsList.add(new RsEvent("第一件热搜", "1111成功", 1));
+        rsList.add(new RsEvent("第二件热搜", "2222成功", 2));
+        rsList.add(new RsEvent("第三件热搜", "3333成功", 3));
     }
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    RsEventRepository rsEventRepository;
 
     @GetMapping("rs/lists")
-    public ResponseEntity<List<RsEvent>> shouldGetRsEvent() {
+    public ResponseEntity<List<RsEvent>> getRsEvent() {
         return ResponseEntity.ok(rsList);
     }
 
     @PostMapping("/rs/event")
     @JsonView(RsEvent.RsEventUserInfo.class)
-    public ResponseEntity shouldAddOneRsEvent(@RequestBody @Valid RsEvent rsEvent, BindingResult result) throws InvalidPostRsParamException {
-        if(result.hasErrors()){
+    public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent, BindingResult result) throws InvalidPostRsParamException {
+        if (result.hasErrors()) {
             throw new InvalidPostRsParamException("invalid param");
         }
 
-        User user = rsEvent.getUser();
-        if (!userNameList.contains(user.getUserName())) {
-            userNameList.add(user.getUserName());
-            userList.add(user);
+        if (!userRepository.existsById(rsEvent.getUserId())) {
+//            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+            //为什么用上面那个不行，同样相当于返回一个400
+            throw new InvalidPostRsParamException("invalid param");
         }
-        rsList.add(rsEvent);
 
-        int index = rsList.size() - 1;
-        return ResponseEntity.created(null).header("index", String.valueOf(index)).build();
+        RsEventEntity rsEventEntity = RsEventEntity.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName()).userId(rsEvent.getUserId()).build();
+        rsEventRepository.save(rsEventEntity);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/rs/list")
-    public ResponseEntity shouldGetRoundList(@RequestParam int start,@RequestParam int end) throws InvalidIndexException {
-        if(start <0 || end > rsList.size()){
+    public ResponseEntity getRoundList(@RequestParam int start, @RequestParam int end) throws InvalidIndexException {
+        if (start < 0 || end > rsList.size()) {
             throw new InvalidIndexException("invalid request param");
         }
 
-        return ResponseEntity.ok(rsList.subList(start,end));
+        return ResponseEntity.ok(rsList.subList(start, end));
     }
 
-    @ExceptionHandler({InvalidIndexException.class,InvalidPostRsParamException.class,InvalidPostUserParamException.class})
-    public ResponseEntity exceptionHandler(Exception ex){
+    @ExceptionHandler({InvalidIndexException.class, InvalidPostRsParamException.class, InvalidPostUserParamException.class})
+    public ResponseEntity exceptionHandler(Exception ex) {
         Logger logger = LoggerFactory.getLogger(RsController.class);
         logger.error(ex.getMessage());
 
@@ -80,8 +89,8 @@ public class RsController {
     }
 
     @GetMapping("/rs/{index}")
-    public ResponseEntity shouldGetOneRsEvent(@PathVariable int index) throws InvalidIndexException {
-        if(index <0 || index > rsList.size()){
+    public ResponseEntity getOneRsEvent(@PathVariable int index) throws InvalidIndexException {
+        if (index < 0 || index > rsList.size()) {
             throw new InvalidIndexException("invalid index");
         }
         RsEvent rsEvent = rsList.get(index);
@@ -89,15 +98,15 @@ public class RsController {
     }
 
     @GetMapping("rs/users")
-    public ResponseEntity shouldGetAllUser(){
+    public ResponseEntity getAllUser() {
 
         return ResponseEntity.ok(userList);
     }
 
     @PostMapping("user")
     @JsonView(RsEvent.RsEventUserInfo.class)
-    public ResponseEntity shouldAddUser(@RequestBody @Valid User user,BindingResult result) throws InvalidPostUserParamException {
-        if(result.hasErrors()){
+    public ResponseEntity addUser(@RequestBody @Valid User user, BindingResult result) throws InvalidPostUserParamException {
+        if (result.hasErrors()) {
             throw new InvalidPostUserParamException("invalid user");
         }
 
