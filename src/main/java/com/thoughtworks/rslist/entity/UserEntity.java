@@ -33,4 +33,10 @@ public class UserEntity {
 
     @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "userEntity")
     private List<RsEventEntity> rsEventEntities;
+
+    @Column(name = "vote_id")
+    private Integer voteId;
+
+    //还剩多少票数
+    private Integer tickets;
 }

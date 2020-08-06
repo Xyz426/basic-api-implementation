@@ -30,4 +30,8 @@ public class RsEventEntity {
 
     @ManyToOne
     private UserEntity userEntity;
+
+    @Column
+    //获得的票数
+    private int tickets;
 }
