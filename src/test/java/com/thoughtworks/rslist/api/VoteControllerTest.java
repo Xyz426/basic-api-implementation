@@ -75,6 +75,7 @@ public class VoteControllerTest {
                 .andExpect(status().isOk());
 
         //???神马情况，明明数据库已表中已经有了票
+        rsEventEntity = rsEventRepository.findById(rsEventEntity.getId()).get();
         assertEquals(2, rsEventEntity.getTickets());
 
 
