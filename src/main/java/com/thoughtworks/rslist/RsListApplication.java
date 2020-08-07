@@ -2,6 +2,7 @@ package com.thoughtworks.rslist;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @SpringBootApplication
 public class RsListApplication {
@@ -10,4 +11,8 @@ public class RsListApplication {
         SpringApplication.run(RsListApplication.class, args);
     }
 
+    @PostMapping("rs/event")
+    public void shouldAddOneRsEvent(){
+
+    }
 }
