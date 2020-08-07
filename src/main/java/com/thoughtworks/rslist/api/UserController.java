@@ -22,7 +22,7 @@ public class UserController {
 //    @Autowired
 //    RsEventRepository rsEventRepository;
 
-    @PostMapping("add/user")
+    @PostMapping("user")
     public void addUser(@RequestBody User user){
         UserEntity userEntity = UserEntity.builder().age(user.getAge()).userName(user.getUserName()).email(user.getEmail())
                 .phone(user.getPhone()).gender(user.getGender()).build();

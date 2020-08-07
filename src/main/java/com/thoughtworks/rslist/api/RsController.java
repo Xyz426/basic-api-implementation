@@ -114,7 +114,7 @@ public class RsController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PutMapping("/rs/update/{rsEventId}")
+    @PutMapping("/rs/{rsEventId}")
     public ResponseEntity updateRsEvent(@PathVariable int rsEventId,@RequestBody RsEvent rsEvent){
         if(!rsEventRepository.existsById(rsEventId)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
