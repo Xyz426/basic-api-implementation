@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -28,8 +28,6 @@ public class VoteEntity {
     @Column(name = "rs_event_id")
     private int rsEventId;
 
-
-    //下面的报错
-//    @Column(name = "current_time")
-//    private Date currentTime;
+    @Column(name = "vote_time")
+    private LocalDateTime voteTime;
 }

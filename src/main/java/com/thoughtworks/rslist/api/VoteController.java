@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
+
 @Controller
 public class VoteController {
 
@@ -38,7 +40,7 @@ public class VoteController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        voteRepository.save(voteEntity);
+//        voteRepository.save(voteEntity);
 
         RsEventEntity rsEventEntity = rsEventRepository.findById(rsEventId).get();
         //更新事件票数：旧票+新票
@@ -48,6 +50,8 @@ public class VoteController {
 
         voteEntity.setUserId(userId);
         voteEntity.setRsEventId(rsEventId);
+
+        voteEntity.setVoteTime(LocalDateTime.now());
         userEntity.setVoteId(voteEntity.getId());
 
         userRepository.save(userEntity);
