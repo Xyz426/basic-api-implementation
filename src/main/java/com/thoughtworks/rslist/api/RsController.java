@@ -75,9 +75,7 @@ public class RsController {
             throw new InvalidIndexException("invalid request param");
         }
 
-//        return ResponseEntity.ok(rsList.subList(start, end));
-        List<RsEventEntity> byRoundId = rsEventRepository.findByRoundId(start, end);
-        return ResponseEntity.ok(byRoundId);
+        return ResponseEntity.ok(rsList.subList(start, end));
     }
 
     @ExceptionHandler({InvalidIndexException.class, InvalidPostRsParamException.class, InvalidPostUserParamException.class})
@@ -102,7 +100,7 @@ public class RsController {
     @GetMapping("rs/users")
     public ResponseEntity getAllUser() {
 
-        return ResponseEntity.ok(rsEventRepository.findAll());
+        return ResponseEntity.ok(userList);
     }
 
     @PostMapping("user")
