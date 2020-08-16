@@ -17,14 +17,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 public class VoteController {
 
-    @Autowired
-    UserRepository userRepository;
+//    @Autowired
+    private final UserRepository userRepository;
 
-    @Autowired
-    RsEventRepository rsEventRepository;
+//    @Autowired
+    private final RsEventRepository rsEventRepository;
 
-    @Autowired
-    VoteRepository voteRepository;
+//    @Autowired
+    private final VoteRepository voteRepository;
+
+    public VoteController(UserRepository userRepository,RsEventRepository rsEventRepository,VoteRepository voteRepository){
+        this.userRepository = userRepository;
+        this.rsEventRepository = rsEventRepository;
+        this.voteRepository = voteRepository;
+    }
 
     @PutMapping("rs/vote/{rsEventId}")
     public ResponseEntity addRsEvntVoteNum(@PathVariable int rsEventId, @RequestBody VoteEntity voteEntity) {

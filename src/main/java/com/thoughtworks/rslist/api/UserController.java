@@ -16,12 +16,15 @@ import javax.transaction.Transactional;
 @Controller
 public class UserController {
 
-    @Autowired
-    UserRepository userRepository;
+//    @Autowired
+    private final UserRepository userRepository;
 
 //    @Autowired
 //    RsEventRepository rsEventRepository;
 
+    public UserController(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
     @PostMapping("user")
     public void addUser(@RequestBody User user){
         UserEntity userEntity = UserEntity.builder().age(user.getAge()).userName(user.getUserName()).email(user.getEmail())
