@@ -11,9 +11,11 @@ import com.thoughtworks.rslist.exception.InvalidPostRsParamException;
 import com.thoughtworks.rslist.exception.InvalidPostUserParamException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.service.RsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -27,6 +29,11 @@ public class RsController {
     private List<RsEvent> rsList = new ArrayList<>();
     private List<String> userNameList = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
+
+    @Bean
+    public RsService rsService(){
+        return new RsService();
+    }
 
     public RsController() {
         userList.add(new User("aaa", 21, "male", "xyz@123.com", "11234567890"));
